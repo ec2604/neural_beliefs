@@ -14,7 +14,7 @@ class CPCI_Action_30(nn.Module):
         cpc_clf = [MLP() for i in range(self.look_ahead)]
         self.mlp = nn.ModuleList(cpc_clf)
         # TODO: Use env grid size to initialize evalMLP input size
-        self.eval_mlp = evalMLP()
+        self.eval_mlp = evalMLP((grid_x, grid_y))
         self.device = device
         self.CPC_optimizer = torch.optim.Adam(list(self.mlp.parameters()) + list(self.observation_to_latent_mapper.parameters()) + list(self.belief_gru.parameters())
                                               + list(self.action_gru.parameters()), lr=cpc_lr)
@@ -72,7 +72,7 @@ class CPCI_Action_30(nn.Module):
         beliefs = self.belief_gru.gru1(z_a_batch)[0]
 
         # Sample negatives
-        z_batch_neg = utils.sample_negatives(z_batch, self.negative_sampling_factor, z_batch.shape[0], self.trajectory_len)
+        z_batch_neg = utils.sample_negatives(z_batch, self.negative_sampling_factor)
 
         pred_positive, pred_negative, pred_xytheta, z_neg_dist = self.forward(beliefs, a_batch,
                                                                           z_batch, z_batch_neg, self.look_ahead, orig_position, orig_orientation, eval_mlp)

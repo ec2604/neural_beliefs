@@ -10,7 +10,7 @@ import copy
 from datetime import datetime as dt
 
 from collections import deque
-from model import CPCI_Action_1, CPCI_Action_30
+from model import CPCI_Action_30
 from data_utils import SubTrajectory, TrajectoryBuffer
 from tqdm import tqdm
 from torch.utils.tensorboard import SummaryWriter
@@ -236,8 +236,8 @@ if __name__ == '__main__':
     parser.add_argument('--look_ahead', type=int, default=int(1))
     parser.add_argument('--grid_size_x', type=int, default=int(12))
     parser.add_argument('--grid_size_y', type=int, default=int(12))
-    parser.add_argument('--train_data_size', type=int, default=int(1e4))
-    parser.add_argument('--test_data_size', type=int, default=int(20e3))
+    parser.add_argument('--train_data_size', type=int, default=int(1e5))
+    parser.add_argument('--test_data_size', type=int, default=int(2e4))
     parser.add_argument('--cpc_tb_print_cycle', type=int, default=int(50))
     parser.add_argument('--eval_tb_print_cycle', type=int, default=int(200))
     parser.add_argument('--num_eval_batches', type=int, default=int(300))
@@ -245,8 +245,7 @@ if __name__ == '__main__':
     parser.add_argument('--eval_lr', type=float, default=2e-4)
     parser.add_argument('--num_batches_until_eval', type=int, default=1e3)
     args = parser.parse_args()
-    for arg in args:
-        print(arg)
+    print(args)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = CPCI_Action_30(device, args.trajectory_len, args.negative_sampling_factor, cpc_lr=args.cpc_lr,
                            eval_lr=args.eval_lr, look_ahead=args.look_ahead, grid_x=args.grid_size_x,
